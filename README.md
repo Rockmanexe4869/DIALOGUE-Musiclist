@@ -65,19 +65,37 @@ npm run build
 
 ## GitHub Pagesでの公開方法
 
-### 方法A: GitHub Actionsを使う場合
+このリポジトリは、`main` ブランチに push / merge されたときに GitHub Actions で自動ビルドし、生成された `dist` フォルダを GitHub Pages に公開する方式です。`Deploy from a branch` で `main` / `root` を直接公開する方式は使いません。
+
+### 初回だけ行うGitHub側の設定
 
 1. GitHubのリポジトリ画面を開きます。
 2. `Settings` → `Pages` を開きます。
 3. `Build and deployment` の `Source` を `GitHub Actions` にします。
-4. Vite用のGitHub Pagesワークフローを追加し、`npm ci` → `npm run build` → `dist` を公開します。
+4. 設定を保存します。
 
-### 方法B: 手動でdistを公開する場合
+### 自動デプロイの流れ
 
-1. ローカルで `npm run build` を実行します。
-2. 生成された `dist` の中身をGitHub Pages用ブランチや設定済みホスティング先へ配置します。
+1. 変更を `main` ブランチに push、または pull request を `main` に merge します。
+2. `.github/workflows/deploy.yml` のワークフローが自動で起動します。
+3. GitHub Actions上で `npm install` が実行され、依存パッケージがインストールされます。
+4. 続けて `npm run build` が実行され、Viteが公開用ファイルを `dist` フォルダに生成します。
+5. `dist` フォルダだけが GitHub Pages にアップロードされ、Webアプリとして公開されます。
 
-このアプリは `vite.config.ts` で `base: '/DIALOGUE-Musiclist/'` を設定済みなので、GitHub PagesのURLが `https://ユーザー名.github.io/DIALOGUE-Musiclist/` の形でも動くようになっています。
+### 公開URL
+
+このアプリは `vite.config.ts` で `base: '/DIALOGUE-Musiclist/'` を設定済みなので、GitHub PagesのURLが次の形でも動くようになっています。
+
+```text
+https://ユーザー名.github.io/DIALOGUE-Musiclist/
+```
+
+### 公開時の注意
+
+- このアプリはスマホアプリではなく、ブラウザで開くWebアプリです。
+- GitHub Pagesに公開されるのは、ビルド後の静的ファイルだけです。
+- 音源データ、動画データ、ジャケット画像、歌詞は含めない方針を維持してください。
+- `vite.config.ts` の `base` は `/DIALOGUE-Musiclist/` のまま変更しないでください。
 
 ## 新曲追加方法
 
